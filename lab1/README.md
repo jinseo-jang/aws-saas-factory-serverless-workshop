@@ -167,7 +167,7 @@ To explore the code, you must first re-open the Cloud9 service in the AWS consol
 
 Now, expand the list of folders in the left-hand pane drilling into the <b>lab 1</b> folder. In that folder under <b>server</b> you'll find the <b>src</b> folder that holds the source code for our monolith. The main folders of our application are show in the following image:
 
-<b>Step 11</ b> – 이제 이 모놀리식 솔루션의 기본 코드를 살펴 보겠습니다. 우리는 실습 과정에서 모노리스 코드에 너무 많은 시간을 할애하지는 않지만, 애플리케이션에 대한 좀 더 많은 컨텍스트와 세부 사항을 살펴 보는것이 도움이될 것 입니다. 이 솔루션은 Java로 빌드 되었지만 여기서 개념은 대부분의 모놀리식 애플리케이션에서 나타나는 패턴과 유사합니다.
+<b>Step 11</b> – 이제 이 모놀리식 솔루션의 기본 코드를 살펴 보겠습니다. 우리는 실습 과정에서 모노리스 코드에 너무 많은 시간을 할애하지는 않지만, 애플리케이션에 대한 좀 더 많은 컨텍스트와 세부 사항을 살펴 보는것이 도움이될 것 입니다. 이 솔루션은 Java로 빌드 되었지만 여기서 개념은 대부분의 모놀리식 애플리케이션에서 나타나는 패턴과 유사합니다.
 
 코드를 탐색하려면 먼저 AWS 콘솔에서 Cloud9 서비스를 다시 열어야합니다. Cloud9를 열면 환경 중 하나로 나열된 <b>Serverless SaaS Workshop IDE</b>를 선택하십시오. <b>Open IDE</b> 버튼을 선택하여이 환경을 여십시오.
 
