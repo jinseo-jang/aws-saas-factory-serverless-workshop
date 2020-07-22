@@ -72,7 +72,7 @@ When this script is done executing, you'll have all the necessary pieces in plac
 
 <b>Step 3</b> – The script committed a revision to the CodeCommit source control system, triggering a deployment. To see the status of this pipeline, navigate to the CodePipeline service within the AWS console. You'll see the <b>saas-factory-srvls-wrkshp-pipeline-lab1</b> pipeline listed amongst the pipelines in your account. The screen should appear as follows:
 
-<b>Step3</b> – 스크립트가 CodeCommit 소스 제어 시스템의 개정판을 커밋하며 배포 과정을 트리거했습니다. 이 파이프라인의 상태를 보려면 AWS 콘솔에서 CodePipeline 서비스로 이동하십시오. 계정의 파이프라인들 가운데 <b>saas-factory-srvls-wrkshp-pipeline-lab1 /b> 파이프라인을 확인할 수 있을겁니다. 화면은 다음과 같이 나타납니다:
+<b>Step3</b> – 스크립트가 CodeCommit 소스 제어 시스템의 개정판을 커밋하며 배포 과정을 트리거했습니다. 이 파이프라인의 상태를 보려면 AWS 콘솔에서 CodePipeline 서비스로 이동하십시오. 계정의 파이프라인들 가운데 <b>saas-factory-srvls-wrkshp-pipeline-lab1</b> 파이프라인을 확인할 수 있을겁니다. 화면은 다음과 같이 나타납니다:
 
 <p align="center"><img src="../images/lab1/Codepipeline.png" alt="Code Pipeline"/></p>
 
