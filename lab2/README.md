@@ -2,43 +2,74 @@
 
 Now that we have a fully deployed and functional monolith, it's time to start looking at what it will take to move this monolith to a multi-tenant, modern architecture. The first step in that process is to introduce a way to have tenants onboard to your system. This means moving away from the simple login mechanism we had with our monolith and introducing a way for tenants to follow an automated process that will allow us to sign-up and register as many tenants as we want. As part of this process, we'll also be introducing a mechanism for managing tenant identities. Finally, we'll also create a new client experience that extracts the client from our server-side web/app tier and moves it to S3 as a modern React application.
 
+이제 완전히 배포가능 하고 기능을 갖춘 모놀리스 애플리케이션을 만들었으므로 이제 이 모놀리스를 멀티 테넌트, 현대식 아키텍처로 옮기기 위해 무엇이 필요한지 살펴볼 차례입니다. 첫 번째 단계는 테넌트가 여러분의 시스템에 온보딩 하는 방법을 도입 하는 것입니다. 이것은 우리가 모놀리스 애플리케이션에서 가지고 있던 간단한 로그인 메커니즘에서 벗어나 테넌트가 자동화 된 프로세스를 따라 원하는 방식으로 테넌트들이 가입하고 등록 할 수있는 방법을 도입하는 하는 것입니다. 이 프로세스의 일부로 테넌트 ID를 관리하기 위한 메커니즘도 도입 할 예정입니다. 마지막으로, 서버 측 webapp 계층에서 클라이언트 부분을 분리해 최신 React 클라이언트 애플리케이션 만들어 S3로 옮기는, 새로운 클라이언트 환경도 만들 것 입니다.
+
 It's important to note that this workshop does not dive deep into the specifics of onboarding and identity. These topics could consume an entire workshop and we recommend that you leverage our other content on these topics to fill in the details. The same is true for the React client. Generally, there aren't many multi-tenant migration considerations that change your approach to building and hosting a React application on AWS. There are plenty of examples and resources that cover that topic. Our focus for this workshop is more on the microservices pieces of the migration and the strategies we'll employ with our onboarding automation to allow us to cutover gracefully from single-tenant to multi-tenant microservices.
 
+이 워크샵은 온보딩 및 indenity 세부 사항에 대해 자세히 다루지 않습니다. 관련한 내용은 다른 컨텐츠를 살펴 보시기를 추천 드립니다. React 클라이언트도 마찬가지입니다. 일반적으로 AWS에서 React 애플리케이션을 구축하고 호스팅하는 방식을 변경할 때 멀티 테넌트 관점에서 고려해야 하는 사항들이 많지는 않습니다.React에 관한 다른 다양한 자료를 살펴 보시기를 추천 드립니다. 이 워크샵에서는 마이크로 서비스 마이그레이션 및 온보딩 자동화를 위해 채택할 전략에 중점을 두어 단일 테넌트에서 다중 테넌트 마이크로 서비스로 전환하는 과정을 살펴볼 것 입니다.
+
 Therefore, we will intentionally gloss over some of the details of onboarding, identity, and how we built our new React client and get into how our automated onboarding will orchestrate the creation of tenant resources. Here's a conceptual view of the architecture:
+
+그러므로 저희는 온보딩, indentity 에 관한 세부 사항과 어떻게 새로운 React 클라이언트를 만드는지 살펴 보기 보다 어떻게 자동화된 온보딩 프로세스가 테넌트 별 리소스 생성을 오케스트레이션 하는지 살펴 볼 것 입니다. 아래는 이에 대한 개념적인 아키텍처 입니다:
 
 <p align="center"><img src="../images/lab2/LogicalArchitecture.png" alt="Logical Architecture"/></p>
 
 You'll see that we now support a separate application tier for each tenant in your system, each of which has its own storage. This allows us to leave portions of our code in our monolith but be able to operate in a multi-tenant fashion. In this example, Tenant 1 and Tenant 2 are presumed to have already onboarded. Our new S3-hosted web application interacts with these tenant deployments via the API Gateway.
 
-The challenge is that because every tenant will access the system through a shared web experience, we need to introduce some notion of routing that will direct requests per tenant to the appropriate silo of compute and database resources. This is achieved via Application Load Balancer (ALB) listener rules that inspect the headers of each incoming request, and route the traffic to the proper target group that is deployed separately for each registered tenant. 
+이제 시스템은 각 테넌트별로 별도의 애플리케이션 티어와 스토리지 티어를 갖게될 것 입니다. 이런 아키텍처 모습은 코드의 일부를 모놀리스 애플리케이션에 남겨 두지만 멀티 테넌트 방식으로 작동될 수 있게 해줍니다. 이 예에서 테넌트 1 및 테넌트 2는 이미 온보드 된 것으로 가정합니다. 새로운 S3 호스팅 웹 애플리케이션은 API Gateway를 통해 이러한 테넌트 앱 계층과 상호 작용합니다.
+
+The challenge is that because every tenant will access the system through a shared web experience, we need to introduce some notion of routing that will direct requests per tenant to the appropriate silo of compute and database resources. This is achieved via Application Load Balancer (ALB) listener rules that inspect the headers of each incoming request, and route the traffic to the proper target group that is deployed separately for each registered tenant.
+
+문제는 모든 테넌트가 공유된 웹 환경을 통해 시스템에 액세스하기 때문에 테넌트 당 요청을 적절하게 사일로된 테넌트별 컴퓨팅 및 데이터베이스 리소스로 보내는 라우팅 개념을 도입해야한다는 것입니다. 이는 각 수신 요청의 헤더를 검사한 후 등록 된 각 테넌트별로 배포 된 적절한 대상 그룹으로 트래픽을 라우팅하는 ALB (Application Load Balancer) 리스너 규칙을 통해 만들수 있습니다.
 
 As new tenants are added to the system we must provision a new instance of the application tier for this tenant (shown as Tenant 3 in the picture above). This automated process will both provision the new tier and configure the rules of the ALB to route traffic for Tenant 3 to this cluster.
 
+새로운 테넌트가 시스템에 추가되면이 이 신규 테넌트용으로 새로운 애플리케이션 계층 인스턴스를 프로비저닝해야합니다 (위 그림에서 Tenant 3으로 표시). 이 자동화 된 프로세스는 새 계층을 프로비저닝하고 Tenant 3에 대한 트래픽을 이 클러스터로 라우팅하도록 ALB 규칙을 구성합니다.
+
 Our goals for this lab are to enable this new onboarding automation and register some tenants to verify that the new resources are being allocated as we need. Again, we are only going to highlight the identity and underlying orchestration bits of this process, but we will dive deep on the request routing mechanics that makes this phase of our migration to multi-tenant microservices possible.
+
+이 실습의 목표는 이 새로운 온보딩 자동화를 만들고 일부 테넌트를 등록하여 필요한 만큼 새 리소스가 할당되는지 확인하는 것입니다. 또한, 우리는 indentity 와 온 보딩 프로세스뿐 아니라, 멀티 테넌트 마이크로 서비스로의 마이그레이션 단계를 가능하게하는 Request 라우팅 메커니즘에 대해서도 자세히 살펴볼 것 입니다.
 
 ## What You'll Be Building
 
-Before we can start to dig into decomposing our system into microservices, we must introduce the notion of tenancy into our environment. While it's tempting to focus on building new Lambda functions, we have to start by setting up the mechanisms that will be core to creating a new tenant, authenticating them, and connecting their tenant context to each authenticated user for this experience. 
+Before we can start to dig into decomposing our system into microservices, we must introduce the notion of tenancy into our environment. While it's tempting to focus on building new Lambda functions, we have to start by setting up the mechanisms that will be core to creating a new tenant, authenticating them, and connecting their tenant context to each authenticated user for this experience.
+
+시스템을 마이크로 서비스로 분해하기 시작하기 전에, 저희는 먼저 테넌시 개념을 저희 환경에 도입해야합니다. 새로운 Lambda 함수를 만드는 데 중점을두고 있지만, 새로운 테넌트 생성, 인증 및 테넌트 컨텍스트를 인증 된 각 사용자에게 연결하는 핵심적인 메커니즘을 설정하는 것을 우선 시작해야 합니다.
 
 A key part of this lab is deploying an onboarding mechanism that will establish the foundation we'll need to support the incremental migration of our system to a multi-tenant model. This means introducing automation that will orchestrate the creation of each new tenant silo and putting all the wiring in place to successfully route tenants, ideally without changing too much of our monolith to support this environment.
 
+이 실습의 핵심은 시스템의 멀티 테넌트 모델로의 순차적 마이그레이션을 지원하는 데 필요한 기반을 설정하는 온 보딩 메커니즘을 배포하는 것입니다. 이는 각각의 새로운 테넌트를 위한 사일로 형태의 자원 생성을 오케스트레이션 하고 테넌트를 라우팅하기 위해 필요한 복잡한 요소를 제 위치에 배치 하는것을 의미 합니다. 물론 모놀리스 애플리케이션에 대한 너무 많은 변경 사항 없이 말이죠.
+
 As preparation for decomposing our monolithic application tier into microservices, we will also move from an MVC page controller architecture to a REST API based architecture. By exposing our business logic services through a REST API, we start to see what our microservices will look like and we enable moving to a modern client-rendered web front end. We'll extract the UI from the server and replace it with a React application running in the browser. With this context as our backdrop, here are the core elements of this exercise:
-*    Prepare the new infrastructure that's needed to enable the system to support separate silos for each tenant in the system. This will involve putting in new mechanisms that will leverage the tenant context we're injecting and route each tenant to their respective infrastructure stack.
-*    Introduce onboarding and identity that will allow tenants to register, create a user identity in Cognito, and trigger the provisioning of a new separate stack for each tenant. This orchestration is at the core of enabling your first major step toward multi-tenancy, enabling you to introduce tenant context (as part of identity) and automation that configures and provisions the infrastructure to enable the system to run as a true siloed SaaS solution.
-*    Refactor the application code of our solution to move away from the MVC model we had in Lab 1 and shift to a completely REST-based API for our services. This means converting the controllers we had in Lab 1 into an API and connecting that API to the API Gateway setting the stage for our service decomposition efforts.
-*    Migrate from a server-side rendered UI to a modern React UI, moving the static JavaScript, CSS and HTML code to an S3 bucket and enabling us to align with best practices for fully isolating the UI from the server. This is a key part of our migration story since it narrows the scope of what is built, deployed, and served from the application tier.
-*    Dig into the weeds of how the UI connects to the application services via the API Gateway. We'll find some broken code in our UI and reconnect it to the API Gateway to expose you to the new elements of our service integration.
-*    Use our new UI to onboard new tenants and exercise the onboarding process. The goal here is to illustrate how we will provision new users and tenants. A key piece of this will involve the provisioning of a new application tier (still a monolith) for each tenant that onboards. This will allow us to have a SaaS system where each tenant is running in its own silo on largely "legacy" code while appearing to be a multi-tenant system to your end customers -- your tenants.
+
+모놀리식 애플리케이션 계층을 마이크로 서비스로 분해하기 위한 준비로 MVC 페이지 컨트롤러 아키텍처에서 REST API 기반 아키텍처로 이동할 것입니다. REST API를 통해 비즈니스 로직 서비스를 공개함으로써 우리이 마이크로 서비스가 어떤 모습일지와 modern client-rendered 웹 프론트엔드로 이동되는지 함께 살펴 볼것 입니다. 서버에서 UI를 분리하여 브라우저에서 실행되는 React 애플리케이션으로 대체할 것 입니다. 이를 바탕으로 실습의 주요 부분을 살펴 보겠습니다:
+
+- Prepare the new infrastructure that's needed to enable the system to support separate silos for each tenant in the system. This will involve putting in new mechanisms that will leverage the tenant context we're injecting and route each tenant to their respective infrastructure stack.
+- Introduce onboarding and identity that will allow tenants to register, create a user identity in Cognito, and trigger the provisioning of a new separate stack for each tenant. This orchestration is at the core of enabling your first major step toward multi-tenancy, enabling you to introduce tenant context (as part of identity) and automation that configures and provisions the infrastructure to enable the system to run as a true siloed SaaS solution.
+- Refactor the application code of our solution to move away from the MVC model we had in Lab 1 and shift to a completely REST-based API for our services. This means converting the controllers we had in Lab 1 into an API and connecting that API to the API Gateway setting the stage for our service decomposition efforts.
+- Migrate from a server-side rendered UI to a modern React UI, moving the static JavaScript, CSS and HTML code to an S3 bucket and enabling us to align with best practices for fully isolating the UI from the server. This is a key part of our migration story since it narrows the scope of what is built, deployed, and served from the application tier.
+- Dig into the weeds of how the UI connects to the application services via the API Gateway. We'll find some broken code in our UI and reconnect it to the API Gateway to expose you to the new elements of our service integration.
+- Use our new UI to onboard new tenants and exercise the onboarding process. The goal here is to illustrate how we will provision new users and tenants. A key piece of this will involve the provisioning of a new application tier (still a monolith) for each tenant that onboards. This will allow us to have a SaaS system where each tenant is running in its own silo on largely "legacy" code while appearing to be a multi-tenant system to your end customers -- your tenants.
 
 Once we complete these fundamental steps, we will have all the moving parts in place to look forward to Lab 3 where we start migrating our monolithic application tier to a series of serverless functions.
+
+- 시스템이 각 테넌트에 대해 별도의 사일로 환경을 갖는데 필요한 새로운 인프라 준비. 여기에는 테넌트 컨텍스트를 활용하고 각 테넌트를 해당 인프라 스택으로 라우팅하는 새로운 메커니즘을 도입하는 것도 포함.
+- 테넌트가 등록 되면 Cognito에서 user idendity 생성하며 각 테넌트에 대해 새 별도 스택을 프로비저닝 할 수있는 온보딩 및 Indenity 도입. 이 오케스트레이션은 멀티 테넌시를 향한 첫 번째 핵심사항 이며, 동시에 시스템을 진정한 Siloed SaaS 솔루션으로 실행할 수 있도록 인프라 프로비저닝을 자동화하고 테넌트 컨텍스트 개념을 도입 할 수 있게 함.
+- 솔루션의 애플리케이션 코드를 리팩터링하여 Lab 1에서 만든 MVC 모델에서 벗어나 Rest API 형태로 전환. 즉, Lab 1에서 사용했던 컨트롤러를 API로 변환하고 해당 API를 API Gateway에 연결.
+- 서버 측 렌더링 UI에서 최신 React UI로 마이그레이션하여 정적 JavaScript, CSS 및 HTML 코드를 S3 버킷으로 이동하고 서버에서 UI를 완전히 격리하기위한 모범 사례 도입. 이는 애플리케이션 계층으로 부터 무엇이 만들어지고, 배포되고, 서비스로 제공되어져야 하는지 범위를 좁히기 때문에 마이그레이션 스토리의 핵심 부분.
+- API가 API Gateway를 통해 UI가 애플리케이션 서비스에 연결되는 방식에 대해 자세히 살펴봄.
+- 새로운 UI를 사용하여 새 테넌트를 온 보딩하고 온 보딩 프로세스를 연습. 이때 목표는 새로운 사용자 및 테넌트를 프로비저닝하는 방법을 이해하는 것. 이것의 핵심 부분은 온보드 과정에 있는 각 테넌트에 대해 새로운 애플리케이션 티어 (여전히 모놀리스)를 프로비저닝하는 것을 말함. 이를 통해 각 테넌트 서비스가 본래의 "레거시"코드를 바탕으로 사일로 형태의 멀티 테넌트 아키텍처위에서 구동됨.
+
+이런 기본 단계들을 완료하면 여러분은 Lab3에서 모놀리식 애플리케이션 계층을 서버리스 형태로 마이그레이션 하기 위한 준비를 마칠 수 있습니다.
 
 ## Step-By-Step Guide
 
 Starting Lab 2 you should have a good sense of the core elements of our monolith. It's time to start the modernization process. The steps below will guide you through the migration to a REST based API for our services which will support a new, modern UI. We will introduce multi-tenant onboarding, support for authentication with tenant context, and the automated provisioning of tenant application tiers.
 
-<b>Step 1</b> – The first step in our migration to multi-tenancy is to introduce the core infrastructure that will enable us to have separate silos for each of our tenant environments. Our initial single-tenant system simply directed traffic through an ALB that routed _all_ traffic to a single stack for our one customer. However, to support multi-tenancy, we'll now have multiple instances of our stack and will need to put new routing infrastructure in front of these stacks to support this advanced architecture. 
+<b>Step 1</b> – The first step in our migration to multi-tenancy is to introduce the core infrastructure that will enable us to have separate silos for each of our tenant environments. Our initial single-tenant system simply directed traffic through an ALB that routed _all_ traffic to a single stack for our one customer. However, to support multi-tenancy, we'll now have multiple instances of our stack and will need to put new routing infrastructure in front of these stacks to support this advanced architecture.
 
 To introduce these new constructs, we'll need to first execute a script that will use CloudFormation to configure the elements of this lab. Running the script will require you to navigate to the Cloud9 service in the AWS console and open the IDE for this workshop. Once the IDE is open, go to the terminal window in the lower window pane and run the following commands:
+
 ```
 cd /home/ec2-user/environment/saas-factory-serverless-workshop/resources
 sh lab2.sh
@@ -50,9 +81,10 @@ sh lab2.sh
 
 We must wait until the stack has a status of <b>CREATE_COMPLETE</b>, indicating that all the elements of the stack have been created. If it is not complete, continue to select the refresh button (just to left of the Delete button at the top of the page) to get updated status. <b>You must wait for this process to finish before moving onto the next step</b>. The stack should take less than 5 minutes to complete.
 
-<b>Step 3</b> – As part of moving to a multi-tenant environment, we've also opted to migrate our monolithic web UI (where all the HTML was rendered and served from the app server) to a modern UI framework that is served from Amazon S3 and executes in the user's browser. While this could be viewed as an optional step for many who are migrating to SaaS, we felt it was a compelling strategy and wanted to illustrate how making a move of this nature would influence the look of your final environment. The details of the React application that we'll deploy are mostly out of scope for this effort, but we encourage you to examine the code more carefully to understand how it interacts with the services of our environment. 
+<b>Step 3</b> – As part of moving to a multi-tenant environment, we've also opted to migrate our monolithic web UI (where all the HTML was rendered and served from the app server) to a modern UI framework that is served from Amazon S3 and executes in the user's browser. While this could be viewed as an optional step for many who are migrating to SaaS, we felt it was a compelling strategy and wanted to illustrate how making a move of this nature would influence the look of your final environment. The details of the React application that we'll deploy are mostly out of scope for this effort, but we encourage you to examine the code more carefully to understand how it interacts with the services of our environment.
 
 For now, our goal is to simply get this new UI deployed and working so we can begin to interact with our new multi-tenant model. To simplify things, we've created a shell script to build the React application and copy it to an S3 bucket to make it accessible. <b>You must ensure that the lab2 CloudFormation stack has completed successfully before continuing</b>. To run this script, navigate to your Cloud9 environment and enter the following commands to execute the web client deployment script:
+
 ```
 cd /home/ec2-user/environment/saas-factory-serverless-workshop/resources
 sh website-lab2.sh
@@ -98,9 +130,9 @@ With this item selected you can select the <b>Listeners</b> tab in the lower sec
 
 <p align="center"><img src="../images/lab2/Homepage.png" alt="Homepage"/></p>
 
-This page looks remarkably like the application from the monolith solution that was used in Lab 1. While they look similar, in the real-world scenario, you'd likely redesign aspects of your UI during the rewrite with a modern UI framework. 
+This page looks remarkably like the application from the monolith solution that was used in Lab 1. While they look similar, in the real-world scenario, you'd likely redesign aspects of your UI during the rewrite with a modern UI framework.
 
-<b>Step 10</b> – With this new multi-tenant environment, we can no longer simply sign-in to the system. As a SaaS system, we now onboard our tenants by having them complete a registration process. This is an important step in thinking about your migration. With this registration process, we are essentially presenting our system to end users as a fully SaaS system. This represents a key milestone in your migration approach, enabling your old monolith to run largely unchanged while providing the foundation for migrating the underlying implementation without users being aware of the shift to a multi-tenant serverless implementation. 
+<b>Step 10</b> – With this new multi-tenant environment, we can no longer simply sign-in to the system. As a SaaS system, we now onboard our tenants by having them complete a registration process. This is an important step in thinking about your migration. With this registration process, we are essentially presenting our system to end users as a fully SaaS system. This represents a key milestone in your migration approach, enabling your old monolith to run largely unchanged while providing the foundation for migrating the underlying implementation without users being aware of the shift to a multi-tenant serverless implementation.
 
 Let's create our first tenant by selecting the "Sign Up" button at the top right of our application. Upon selecting this option, you'll be presented with a form similar to the following:
 
@@ -116,7 +148,7 @@ Enter the values for your tenant and your tenant's first user (you do _not_ have
 
 <p align="center"><kbd><img src="../images/lab2/ReleaseChange.png" alt="Release Change"/></kbd></p>
 
-<b>Step 13</b> - Once the pipeline has completed successfully, our new tenant is fully onboarded into their own stack! Let's go back to our client web application hosted at the CloudFront domain name you captured above and sign in using the email and password which you used during the registration process. Click on <b>Sign In</b> button on top right corner and enter your login details. Click on <b>Sign In</b> to authenticate into the application. 
+<b>Step 13</b> - Once the pipeline has completed successfully, our new tenant is fully onboarded into their own stack! Let's go back to our client web application hosted at the CloudFront domain name you captured above and sign in using the email and password which you used during the registration process. Click on <b>Sign In</b> button on top right corner and enter your login details. Click on <b>Sign In</b> to authenticate into the application.
 
 <p align="center"><kbd><img src="../images/lab2/LoginPage.png" alt="Login Page"/></kbd></p>
 
@@ -178,13 +210,13 @@ Now, delete a product by selecting the red <b>Del</b> icon on the right hand sid
 
 ```javascript
 export const deleteProduct = (product) => {
-   return function(dispatch) {
-       const url = `/products/${product.id}`;
-       const instance = createAxiosInstance();
-        
-        dispatch(closeModal());
-        
-        /*
+  return function (dispatch) {
+    const url = `/products/${product.id}`;
+    const instance = createAxiosInstance();
+
+    dispatch(closeModal());
+
+    /*
         instance.delete(url, { data: product })
             .then(response => {
                 const deletedProduct = response.data;
@@ -197,13 +229,14 @@ export const deleteProduct = (product) => {
             .then(() => {
             }, error => console.error(error));
         */
-   };
+  };
 };
 ```
 
 This function is called whenever the client indicates that they want to invoke the DELETE REST method of the Product service. You'll see here that the actual invocation of this method has been disabled. We'll need to un-comment the block of code that makes the call as the first step in repairing this broken path in our application. Remove the comment markers and save the file with the Ctrl-S keyboard shortcut, or by choosing <b>Save</b> from the <b>File</b> menu in Cloud9.
 
 <b>Step 22</b> – Now that we've repaired our client code, we'll need to re-deploy our changes to S3 to have them applied. With the Cloud9 IDE, navigate to the terminal window and executed the following command to re-deploy our client:
+
 ```
 cd /home/ec2-user/environment/saas-factory-serverless-workshop/resources
 sh website-lab2.sh
@@ -245,7 +278,7 @@ Select <b>v1</b> for the <b>Deployment stage</b> and click the <b>Deploy</b> but
 
 <b>Step 27</b> – To validate that our change worked, return to the serverless client application (using the URL from above) and sign in with the provided credentials. Now, attempt to delete the product and you should find that our change has resolved the issue.
 
-<b>Step 28</b> – Finally, we should also note how this move to the API Gateway and a new UI model influenced the implementation of our application service. While our goal is to minimize changes to the monolith code, the interaction between the client and the monolith did change from an MVC model to a REST-based API. That meant that the controller portion of our MVC needed to be refactored to expose the REST API that is invoked through the API Gateway. 
+<b>Step 28</b> – Finally, we should also note how this move to the API Gateway and a new UI model influenced the implementation of our application service. While our goal is to minimize changes to the monolith code, the interaction between the client and the monolith did change from an MVC model to a REST-based API. That meant that the controller portion of our MVC needed to be refactored to expose the REST API that is invoked through the API Gateway.
 
 To view these changes, navigate to the Cloud9 services in the AWS console and open the IDE for this workshop. In the left-hand pane, open the <b>lab2/server/src/main/java</b> folder. This will open a series of folders that correspond to the Java package naming. Under the <b>saasfactory</b> folder you'll see an <b>api</b> folder that holds the new REST API for our services. Double-click on the <b>Products.java</b> file to open the API in the editor. The following is a snippet of code from this file:
 
@@ -275,6 +308,6 @@ With Lab 2, we put all the pieces of multi-tenancy in place without making huge 
 
 At the core of all this was a routing experience that enabled our system to route calls from our client to each tenant stack. Finally, we also made the move to a modern UI model, introducing a React application that is served up from S3. By extracting and committing to this new client model, we streamline and focus our efforts as we look to start creating serverless microservices. This prevents our services from being cluttered with worrying about server-rendered HTML.
 
-You have now completed Lab 2. 
+You have now completed Lab 2.
 
 [Continue to Lab 3](../lab3/README.md)
