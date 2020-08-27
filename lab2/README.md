@@ -212,7 +212,7 @@ Enter the values for your tenant and your tenant's first user (you do _not_ have
 
 <b>Step 15</b> – Now, let's access the product page by selecting the <b>Products</b> item from the navigation at the top of the page. The page will be empty because this tenant has just registered and hasn't added any products to their catalog. The screen will appear as follows:
 
-<b>Step 15</b> – 이제 페이지 상단의 탐색에서 <b>Products</b> 항목을 선택하여 제품 페이지에 액세스 해보겠습니다. 그런데 이 테넌트가 방금 등록했고 카탈로그에 제품을 추가하지 않았기 때문에 페이지가 비어 있습니다. 화면은 다음과 같이 나타납니다.
+<b>Step 15</b> – 이제 페이지 상단의 탐색에서 <b>Products</b> 항목을 선택하여 제품 페이지에 액세스 해보겠습니다. 그런데 이 테넌트가 방금 등록했고 카탈로그에 제품을 추가하지 않았기 때문에 페이지가 비어 있을겁니다. 화면은 다음과 같이 나타납니다.
 
 <p align="center"><kbd><img src="../images/lab2/EmptyProducts.png" alt="Empty Products"/></kbd></p>
 
