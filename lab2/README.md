@@ -218,9 +218,13 @@ Enter the values for your tenant and your tenant's first user (you do _not_ have
 
 <b>Step 16</b> – Click the <b>Add Product</b> button to create a new product. Upon selecting this option, you will be presented with a form to enter the product information that appears as follows:
 
+<b>Step 16</b> – <b>Add Product</b> 버튼을 클릭하여 새 제품을 만듭니다. 이 옵션을 선택하면 다음과 같은 제품 정보를 입력 할 수있는 양식이 표시됩니다.
+
 <p align="center"><img src="../images/lab2/AddProduct.png" alt="Add Product"/></p>
 
 Just as you did in Lab 1, enter some product information and select <b>Add Product</b> to save your product information. This will return you to the list of products where you will be able to see that your new product was added. Make sure to add at least two products, because we will need them in Lab 3.
+
+Lab 1에서했던 것처럼 제품 정보를 입력하고 <b>Add Product</b>를 선택하여 제품 정보를 저장합니다. 그런다음 새 제품이 추가되었음을 확인할 수있는 제품 목록으로 돌아갑니다. 참고로 Lab 4에서 제품 정보가 필요 하므로 제품을 두 개 이상 추가해야합니다.
 
 <p align="center"><img src="../images/lab2/Products.png" alt="Products"/></p>
 
@@ -228,19 +232,31 @@ Just as you did in Lab 1, enter some product information and select <b>Add Produ
 
 Navigate to the Cognito service within the AWS console. In this example, we're provisioning a separate user pool for each tenant. These pools let us group and configure policies separately for each tenant. Select <b>Manage User Pools</b> from the landing page and you'll be presented with a list of user pools similar to the following:
 
+<b>Step 17</b> – 이제 테넌트와 일부 제품을 시스템에 성공적으로 추가 했으므로 시스템이 각 테넌트에 대해 프로비저닝 한 내용과 개별 테넌트를 그들 각각의 사일로 스택으로 연결되도록 라우팅이 어떻게 구성되었는지 자세히 살펴볼 수 있습니다. 테넌트가 Amazon Cognito(사용자를 인증하고 시스템을 통한 테넌트의 흐름을 제어하는 필수 JWT 토큰을 제공함)에 프로비저닝 된 방법을 살펴봄으로써 이 프로세스를 시작합니다.
+
+AWS 콘솔 내에서 Cognito 서비스로 이동합니다. 이번 예 에서는 각 테넌트에 대해 별도의 사용자 풀(User Pool)을 프로비저닝합니다. 이러한 풀(Pool)을 사용하면 각 테넌트에 대해 별도로 정책을 그룹화하고 구성 할 수 있습니다. 방문 페이지에서 <b>Manage User Pools</b>를 선택하면 다음과 유사한 사용자 풀(User Pool) 목록이 표시됩니다.
+
 <p align="center"><img src="../images/lab2/UserPools.png" alt="User Pools"/></p>
 
 Each time you add a new tenant to the system, a new Cognito User Pool will be created. At this point, you should have only one pool since we've only added one tenant. Select that pool from the user pool page. This will provide you with a summary of the pool configuration. Now, select <b>Users and groups</b> from the left-hand side of the page to view users that currently reside in this pool. The page will appear as follows:
+
+시스템에 새 테넌트를 추가 할 때마다 새 Cognito 사용자 풀(User Pool)이 생성됩니다. 이번에는 테넌트를 하나만 추가 했으므로 풀(Pool) 이 하나만 있어야합니다. 사용자 풀(User Pool) 페이지에서 해당 풀(Pool)을 선택합니다. 그러면 풀(Pool) 구성에 대한 요약이 제공될겁니다. 이제 페이지 왼쪽에서 <b>User and groups</b>을 선택하여 현재 이 풀(Pool)에 속하는 사용자(User)를 확인합니다. 해당 페이지는 다음과 같이 나타납니다.
 
 <p align="center"><img src="../images/lab2/Users.png" alt="Users"/></p>
 
 Listed here will be the user that you registered when you created your tenant. Select the link for your user name to view the attributes of the user you created. A page similar to the following will appear:
 
+여기에 테넌트를 만들 때 등록한 사용자(User)가 나열될 겁니다. 생성 한 사용자(User)의 속성을 보려면 사용자(User) 이름에 대한 링크를 선택합니다. 다음과 유사한 페이지가 나타납니다:
+
 <p align="center"><img src="../images/lab2/UserAttributes.png" alt="User Attributes"/></p>
 
 When we provisioned the tenant user pool, we configured specific attributes that allow us to track this user's relationship to a specific tenant. This is shown as the <b>custom:tenant_id</b> custom attribute for the user. This tenant identifier will now be included in the JWT token that is returned from your authentication experience and will be passed through as part of all our interactions with downstream services.
 
+테넌트 사용자 풀(User Pool)을 프로비저닝 할 때 특정 테넌트에 대한 이 사용자(User)의 관계를 추적 할 수있는 특정 속성을 구성했습니다. 이는 사용자(User)에 대한 <b>custom:tenant_id</b> 과 같이 커스텀(Custom) 속성으로 표시됩니다. 이 테넌트 식별자는 이제 사용자의 인증 프로세스로 부터 반환 된 JWT 토큰에 포함되며 인증 이후 이어지는 서비스와의 모든 상호 작용에 포함되어 전달 되어질 것입니다.
+
 <b>Step 18</b> – So, we have a tenant identifier embedded in our JWT token and we've seen how the API Gateway custom authorizer will inject tenant context. However, if you recall, when we looked at the ALB it did not have a routing rule for our tenant because we hadn't onboarded any yet. Now we do have a tenant and we can return to see how the ALB was configured to support the routing for this new tenant. To view this new information, navigate to the EC2 service in the AWS console and select <b>Load Balancers</b> from the left-hand side of the page (you may have to scroll down some to find it). This will provide you with a list of load balancer similar to the following:
+
+<b>Step 18</b> – 따라서 저희는 JWT 토큰에 포함된 테넌트 식별자를 가지고 있고, API Gateway 사용자 지정 권한 부여자(Custom authorizer)가 테넌트 컨텍스트를 주입하는 방법을 확인했습니다. 그러나 ALB 설정을 확인 했을 때 아직 테넌트가 온 보딩하지 않았기 때문에 테넌트에 대한 라우팅 규칙이 없었습니다. 이제 테넌트가 있으며 이 새 테넌트에 대한 라우팅을 지원하도록 ALB가 어떻게 구성되었는지 다시 볼 수 있게되었습니다! 이 새로운 정보를 보려면 다시 AWS 콘솔에서 EC2 서비스로 이동하고 페이지 왼쪽에서 <b>Load Balancers</b>를 선택 하세요.그러면 다음과 유사한 로드 밸런서 목록이 제공될겁니다.ㅇ
 
 <p align="center"><img src="../images/lab2/Lab2ALB.png" alt="Lab2 ALB"/></p>
 
