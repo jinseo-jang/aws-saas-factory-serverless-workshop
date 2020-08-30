@@ -256,19 +256,27 @@ When we provisioned the tenant user pool, we configured specific attributes that
 
 <b>Step 18</b> – So, we have a tenant identifier embedded in our JWT token and we've seen how the API Gateway custom authorizer will inject tenant context. However, if you recall, when we looked at the ALB it did not have a routing rule for our tenant because we hadn't onboarded any yet. Now we do have a tenant and we can return to see how the ALB was configured to support the routing for this new tenant. To view this new information, navigate to the EC2 service in the AWS console and select <b>Load Balancers</b> from the left-hand side of the page (you may have to scroll down some to find it). This will provide you with a list of load balancer similar to the following:
 
-<b>Step 18</b> – 따라서 저희는 JWT 토큰에 포함된 테넌트 식별자를 가지고 있고, API Gateway 사용자 지정 권한 부여자(Custom authorizer)가 테넌트 컨텍스트를 주입하는 방법을 확인했습니다. 그러나 ALB 설정을 확인 했을 때 아직 테넌트가 온 보딩하지 않았기 때문에 테넌트에 대한 라우팅 규칙이 없었습니다. 이제 테넌트가 있으며 이 새 테넌트에 대한 라우팅을 지원하도록 ALB가 어떻게 구성되었는지 다시 볼 수 있게되었습니다! 이 새로운 정보를 보려면 다시 AWS 콘솔에서 EC2 서비스로 이동하고 페이지 왼쪽에서 <b>Load Balancers</b>를 선택 하세요.그러면 다음과 유사한 로드 밸런서 목록이 제공될겁니다.ㅇ
+<b>Step 18</b> – 여기까지 저희는 JWT 토큰에 포함된 테넌트 식별자를 가지고 있고, API Gateway 사용자 지정 권한 부여자(Custom authorizer)가 테넌트 컨텍스트를 주입하는 방법을 확인했습니다. 그러나 ALB 설정을 확인 했을 때 아직 테넌트가 온 보딩하지 않았기 때문에 테넌트에 대한 라우팅 규칙이 없었습니다. 이제 테넌트가 있으며 이 새 테넌트에 대한 라우팅을 지원하도록 ALB가 어떻게 구성되었는지 다시 볼 수 있게되었습니다! 이 새로운 정보를 보려면 다시 AWS 콘솔에서 EC2 서비스로 이동하고 페이지 왼쪽에서 <b>Load Balancers</b>를 선택 하세요.그러면 다음과 유사한 로드 밸런서 목록이 제공될겁니다.ㅇ
 
 <p align="center"><img src="../images/lab2/Lab2ALB.png" alt="Lab2 ALB"/></p>
 
 Select the <b>saas-wrkshp-lab2-[REGION]</b> load balancer from the list. Now, scroll down the page and select the <b>Listeners</b> tab for the ALB. Click on the <b>View/edit rules</b> link and you'll now see a rule has been added specifically for our tenant to control routing. Note that this forwarding rule is set to a higher priority than the default 401 unauthorized rule. The screen will appear similar to the following:
 
+목록에서 <b>saas-wrkshp-lab2-[REGION]</b> 로드 밸런서를 선택합니다. 이제 페이지를 아래로 스크롤해 ALB의 <b>Listeners</b> 탭을 선택합니다. <b>View/edit rules</b> 링크를 클릭하면 테넌트의 라우팅을 제어하기 위해 특별히 추가 된 규칙이 표시됩니다. 이 전달 규칙은 기본 401 승인되지 않은 규칙보다 높은 우선 순위로 설정됩니다. 화면은 다음과 유사하게 나타납니다:
+
 <p align="center"><img src="../images/lab2/ALBListeners.png" alt="ALB Listeners"/></p>
 
 This rule examines the value of the X-Tenant-ID header we inserted via our custom authorizer and forwards traffic to the target group for that tenant's stack of infrastructure. As each new tenant is added, a new rule will be introduced in this list.
 
+이 규칙은 사용자 지정 권한 부여자(custom authorizer)를 통해 사용자 요청에(request) 삽입 한 X-Tenant-ID 헤더의 값을 검사하고 해당 테넌트의 인프라 스택에 해당하는 대상 그룹으로 그 요청을 전달합니다. 새 테넌트가 추가 될 때마다이 목록에 새 규칙이 도입됩니다.
+
 <b>Step 19</b> – In addition to configuring the routing, the onboarding process also provisioned a separate, siloed set of compute resources for each tenant. This cluster of auto-scaled instances continue to run the application services portion of our system. If we look closely at the EC2 instances and databases, you'll find there are separate instances and a separate database provisioned for each tenant. We won't dig into this too deeply. However, it's a critical element of this model that enables our future incremental move to microservices.
 
 Let's take a quick look at the EC2 resources that we currently have to get a better sense of what was created. Navigate to the EC2 service in the console and select the <b>Instances</b> option from the menu on the left-hand side of the page. In this list of instances, you'll see instances with the name <b>saas-factory-srvls-wrkshp-lab2-[TENANT_ID]</b> that represent the instances that were provisioned for your new tenant. If you onboard another tenant, you'd see more instances added here to support that tenant.
+
+<b>Step 19</b> – 라우팅 구성 외에도 온 보딩 프로세스는 각 테넌트에 대해 별도의 격리 된 컴퓨팅 리소스 세트를 프로비저닝했습니다. 이 자동 확장 인스턴스 클러스터는 시스템의 애플리케이션 서비스 부분을 계속 실행합니다. EC2 인스턴스와 데이터베이스를 자세히 살펴보면 별도의 인스턴스와 각 테넌트용으로 프로비저닝 된 별도의 데이터베이스가 있음을 알 수 있습니다. 저희는 이 부분을 너무 깊게 살펴 보지 않을 것입니다. 그러나 이는 향후 마이크로 서비스로의 점진적 이동을 가능하게 하는 모델의 중요한 요소임을 기억해주세요.
+
+현재 생성 된 내용을 더 잘 이해하기 위하여 필요한 EC2 리소스를 간략히 살펴 보겠습니다. 콘솔에서 EC2 서비스로 이동하고 페이지 왼쪽에있는 메뉴에서 <b>Instances</b> 옵션을 선택합니다. 이 인스턴스 목록에는 새 테넌트 용으로 프로비저닝 된 인스턴스를 나타내는 <b>saas-factory-srvls-wrkshp-lab2-[TENANT_ID]</b> 이라는 이름의 인스턴스가 표시됩니다. 다른 테넌트를 온 보딩 시키면 해당 테넌트를 지원하기 위해 여기에 더 많은 인스턴스가 추가 된 것을 볼 수 있을것 입니다.
 
 <p align="center"><img src="../images/lab2/EC2Instances.png" alt="EC2 Instances"/></p>
 
