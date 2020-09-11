@@ -282,11 +282,19 @@ Let's take a quick look at the EC2 resources that we currently have to get a bet
 
 <b>Step 20</b> – Now that you see how the infrastructure and onboarding have changed to support our multi-tenant model, let's look at how the new React client, the API Gateway, and the proxied application services in the tenant silos all connect together. Let's go back to the web client using the CloudFront URL you captured above and sign in with the email address and password you used to register your new tenant.
 
+<b>Step 20</b> – 멀티 테넌트 모델을 지원하기 위해 인프라 및 온 보딩이 어떻게 변경되었는지 확인 했으므로 이제 새로운 React 클라이언트, API Gateway 및 모든 사일로 테넌트안에 연결된 프록시 된 애플리케이션 서비스를 살펴 보겠습니다. 위에서 캡처 한 CloudFront URL을 사용하여 웹 클라이언트로 돌아가서 새 테넌트를 등록할 때 사용한 이메일 주소와 암호로 로그인해보겠습니다.
+
 Once you've logged in, you'll land on the dashboard home page. Click on the <b>Products</b> link in the navigation header to go to the product catalog listing page. Your list of products may be empty. Add a couple of products to your catalog.
+
+로그인 하면 대시 보드 홈 페이지로 이동할 겁니다. 네비게이션 헤더에서 <b>Products</b> 링크를 클릭하여 제품 카탈로그 목록 페이지로 이동하십시오. 제품 목록이 비어있을 수 있습니다. 카탈로그에 몇 가지 제품을 추가하십시오.
 
 Now, delete a product by selecting the red <b>Del</b> icon on the right hand side of the row of the product you'd like to remove. You will see a confirmation dialog asking if you really want to delete your product. Click on the <b>Delete Product</b> button. Nothing happens! Why? Time to debug.
 
+이제 제거하려는 제품 행의 오른쪽에있는 빨간색 <b>Del</b> 아이콘을 선택하여 제품을 삭제하십시오. 제품을 정말로 삭제할 것인지 묻는 확인 대화 상자가 표시됩니다. <b>Delete Product</b> 버튼을 클릭합니다. 아무 반응이 없습니다! 왜그럴까요? 디버깅 할 시간입니다.
+
 <b>Step 21</b> - Let's start our trace from the client to the server by looking at some code in the React application. To get to this code, you'll need to open Cloud9 in the AWS console again and open the IDE environment for this workshop. Open the <b>lab2/client/src/components/products/actions</b> folder in the navigation pane on the left. Double-click on the <b>index.js</b> file to view its contents. In this file you'll find a <b>deleteProduct</b> function toward the bottom that appears as follows:
+
+<b>Step 21</b> - React 애플리케이션의 일부 코드를 살펴보고 클라이언트에서 서버까지의 흐름을 추적해 보겠습니다. 이 코드를 얻으려면 AWS 콘솔에서 Cloud9를 다시 열고 이 워크샵을 위한 IDE 환경을 열어야합니다. 왼쪽 탐색 창에서 <b>lab2/client/src/components/products/actions </b> 폴더를 엽니다. 내용을 보려면 <b>index.js</b> 파일을 두 번 클릭하십시오. 이 파일에서 하단에 다음과 같이 나타나는 <b>deleteProduct</b> 함수를 찾을 수 있을겁니다.
 
 ```javascript
 export const deleteProduct = (product) => {
@@ -315,7 +323,11 @@ export const deleteProduct = (product) => {
 
 This function is called whenever the client indicates that they want to invoke the DELETE REST method of the Product service. You'll see here that the actual invocation of this method has been disabled. We'll need to un-comment the block of code that makes the call as the first step in repairing this broken path in our application. Remove the comment markers and save the file with the Ctrl-S keyboard shortcut, or by choosing <b>Save</b> from the <b>File</b> menu in Cloud9.
 
+이 함수는 클라이언트가 제품 서비스의 DELETE REST 메소드를 실행 하고자 할때 마다 호출됩니다. 여기서 이 메서드의 실제 호출이 비활성화 되어 있음을 알 수 있습니다. 애플리케이션에서 이 끊어진 호출 경로를 복구하는 첫 번째 단계로 호출을 수행하는 코드 블록의 주석 처리를 제거해야합니다. 주석 마커를 제거하고 Ctrl-S 키보드 단축키를 사용하거나 Cloud9의 <b>/File</b> 메뉴에서 <b>Save</b>을 선택하여 파일을 저장합니다.
+
 <b>Step 22</b> – Now that we've repaired our client code, we'll need to re-deploy our changes to S3 to have them applied. With the Cloud9 IDE, navigate to the terminal window and executed the following command to re-deploy our client:
+
+<b>Step 22</b> – 이제 클라이언트 코드를 수정 했으므로 변경 사항을 서버에 적용하려면 이를 다시 S3에 배포해야합니다. Cloud9 IDE를 사용하여 터미널 창으로 이동하고 다음 명령을 실행하여 클라이언트 코드를 다시 배포합니다.
 
 ```
 cd /home/ec2-user/environment/saas-factory-serverless-workshop/resources
@@ -324,23 +336,35 @@ sh website-lab2.sh
 
 <b>Step 23</b> – Now, let's navigate back to the application and attempt to delete the product again (using the URL and credentials we used above). Be sure to <b><i>refresh your web browser</i></b> to force it to pull down a fresh copy of the JavaScript you just fixed. Our updates now have the React client submitting our delete action. However, despite our changes, delete is still not working.
 
+<b>Step 23</b> – 이제 애플리케이션으로 돌아가서 제품 삭제를 다시 시도해 보겠습니다 (위에서 사용한 URL 및 자격 증명 사용). <b><i>웹 브라우저를 새로 고침</i></b>하여 방금 수정 한 JavaScript의 새 사본을 강제로 가져 오도록합니다. 이제 React 클라이언트가 삭제 작업을 실행할 수 있게 되었습니다. 그러나 변경 사항에도 불구하고 삭제는 여전히 작동하지 않습니다.
+
 <p align="center"><img src="../images/lab2/ProductDeleteError.png" alt="Product Delete Error"/></p>
 
 This is because the API Gateway is still not wired to connect to our application tier services. To resolve this, we'll need to open the API Gateway service in the console and select the <b>saas-factory-srvls-wrkshp-lab2</b> API from the list. This will display the various resources that define our system's REST API. In the list of resources, find the <b>/products</b> resource as follows:
+
+이는 API Gateway가 여전히 백엔드 애플리케이션 계층 서비스에 연결하도록 설정 되어 있지 않기 때문입니다. 이 문제를 해결하려면 콘솔에서 API Gateway 서비스를 열고 목록에서 <b>saas-factory-srvls-wrkshp-lab2</b> API를 선택해야 합니다. 그러면 시스템의 REST API를 정의하는 다양한 리소스가 표시됩니다. 리소스 목록에서 다음과 같이 <b>/products</b> 리소스를 찾습니다.
 
 <p align="center"><img src="../images/lab2/ProductsService.png" alt="Products Service"/></p>
 
 To resolve our issue, we need to repair the DELETE method for this resource. Select DELETE to configure this method.
 
+문제 해결을 위해 이 리소스에 정의된 DELETE 메소드를 고쳐야 합니다.이를 위해 DELETE 를 선택하십시오.
+
 <b>Step 24</b> – Once you've selected DELETE, you see the details of the method configuration in a screen that appears as follows:
+
+<b>Step 24</b> – DELETE 를 선택하면 , 아래와 같이 나타나는 화면에서 해당 메소드의 상세 설정 정보를 확인할 수 있을 것입니다.:
 
 <p align="center"><img src="../images/lab2/DeleteMethod.png" alt="Delete Method"/></p>
 
 <b>Step 25</b> – From here, click <b>Integration Request</b> at the top of the box that appears at the right. The integration request configures the mapping for our DELETE method. When you choose this option, you will see a screen similar to following:
 
+<b>Step 25</b> – 다음은, 상단 오른편에 나타나는 <b>Integration Request</b> 를 클릭 하세요. The integration request 는 저희의 DELETE 메소드에 대한 매핑 정보를 설정 합니다. 이 옵션을 고르면 여러분은 아래와 유사한 화면을 보실 겁니다:
+
 <p align="center"><img src="../images/lab2/DeleteIntegrationRequests.png" alt="Delete Integration Request"/></p>
 
 You may notice a warning icon next to the <b>Endpoint URL</b>. It turns out, our endpoint URL is missing a key qualifier. Select the pencil icon next to the Endpoint URL to edit the value. Append the <b>/{id}</b> path variable to your endpoint and <b>select the small checkmark icon</b> to save the value.
+
+<b>Endpoint URL</b> 옆에서 경고 아이콘을 보실수도 있습니다. 이것은 우리의 Endpoint URL이 아직 유효하지 않다는 것입니다. 관련된 Endpoint URL 값을 조정 하기위해 연필 모양의 아이콘을 선택하세요. endpoint 값에 <b>/{id}></b> 경로를 더하고 저장을 위해 작은 체크 아이콘을 선택하세요.
 
 <p align="center"><img src="../images/lab2/DeleteMethodEndpointURL.png" alt="Integration Request Endpoint URL"/></p>
 
