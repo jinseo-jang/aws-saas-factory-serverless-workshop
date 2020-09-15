@@ -116,7 +116,7 @@ A custom authorizer is simply a Lambda function that is invoked with each reques
 
 You'll see that our authorizer expects an event payload of type <b>Token</b> and is associated with a specific Lambda function. In this case, our function is <b>saas-factory-srvls-wrkshp-lambda-authorizer-[REGION]</b>. Also note the <b>Token Source</b> is set to Authorization (more on this below).
 
-권한 부여자가 <b>Token</b> 유형의 이벤트 페이로드(Lambda Event Payload)를 기다리면서 특정 Lambda 함수와 연결되어 있음을 알 수 있습니다. 이 경우 함수는 <b>saas-factory-srvls-wrkshp-lambda-authorizer-[REGION]</b>입니다. 또한 <b>Token Source</ b>가 Authorization 으로 설정되어 있습니다 (자세한 내용은 아래 참조).
+권한 부여자가 <b>Token</b> 유형의 이벤트 페이로드(Lambda Event Payload)를 기다리면서 특정 Lambda 함수와 연결되어 있음을 알 수 있습니다. 이 경우 함수는 <b>saas-factory-srvls-wrkshp-lambda-authorizer-[REGION]</b>입니다. 또한 <b>Token Source</b>가 Authorization 으로 설정되어 있습니다 (자세한 내용은 아래 참조).
 
 <b>Step 5</b> – Time to dive deep on Lambda Authorizers! Let's open code for this Lambda function. Navigate back to Cloud9 and open the <b>Authorizer.java</b> file located in <b>resources/lambda-authorizer/src/main/java/com/amazon/aws/partners/saasfactory</b>
 
@@ -370,21 +370,33 @@ You may notice a warning icon next to the <b>Endpoint URL</b>. It turns out, our
 
 Now that our Endpoint URL has a placeholder for the path variable (the product id), we need to tell API Gateway how to map that to the request so it gets properly passed along to our backend application tier. Expand the <b>URL Path Parameters</b> section by clicking on the caret/triangle. Click on the <b>Add path</b> link and enter <b>id</b> for the <b>Name</b> of your parameter and <b>method.request.path.id</b> for the <b>Mapped from</b> value. Be sure to <b>select the small checkmark icon</b> to save your changes. This should have repaired the last broken piece of the puzzle.
 
+이제 Endpoint URL에 경로 변수 (제품 ID)에 대한 자리 표시자가 있으므로 API Gateway에 이를 요청에 매핑하는 방법을 알려 주어야 백엔드 애플리케이션 계층으로 제대로 전달됩니다. 캐럿/삼각형을 클릭하여 <b>URL Path Parameters</b> 섹션을 확장합니다. <b>Add path</b> 링크를 클릭하고 매개 변수의 <b>Name</b> 에 <b>id</b>를 <b>Mapped from</b>에 <b>method.request.path.id</b>를 값으로 입력 합니다. 변경 사항을 저장하려면 <b>작은 확인 아이콘을 클릭</b>해야합니다. 이것으로 삭제 동작이 정상 작동되도록 고쳐졌습니다.
+
 <p align="center"><img src="../images/lab2/DeleteMethodPathParameters.png" alt="Integration Request Path Parameters"/></p>
 
 <b>Step 26</b> - Before we can see our fix in action, we must redeploy our API. At the top of the screen, above the list of resources, select <b>Deploy API</b> from the <b>Actions</b> drop down menu.
+
+<b>Step 26</b>- 수정 사항이 적용되는 것을 확인하려면 먼저 API를 다시 배포해야합니다. 화면 상단의 리소스 목록 위에있는 <b>Actions</b> 드롭 다운 메뉴에서 <b>Deploy API</b>를 선택합니다.
 
 <p align="center"><img src="../images/lab2/APIGatewayDeploy.png" alt="API Gateway Deploy API"/></p>
 
 Select <b>v1</b> for the <b>Deployment stage</b> and click the <b>Deploy</b> button.
 
+<b>Deployment stage</b>로 <b>v1</b>을 선택하고 <b>Deploy</b> 버튼을 클릭합니다.
+
 <p align="center"><img src="../images/lab2/APIGatewayDeployStage.png" alt="API Gateway Deploy Stage"/></p>
 
 <b>Step 27</b> – To validate that our change worked, return to the serverless client application (using the URL from above) and sign in with the provided credentials. Now, attempt to delete the product and you should find that our change has resolved the issue.
 
+<b>Step 27</b> – 변경 사항이 적용되었는지 확인하려면 서버리스 클라이언트 애플리케이션 (위의 URL 사용)으로 돌아가 제공된 자격 증명으로 로그인합니다. 이제 제품 삭제를 시도하면 앞선 변경 사항으로 문제가 해결되었음을 알 수 있습니다.
+
 <b>Step 28</b> – Finally, we should also note how this move to the API Gateway and a new UI model influenced the implementation of our application service. While our goal is to minimize changes to the monolith code, the interaction between the client and the monolith did change from an MVC model to a REST-based API. That meant that the controller portion of our MVC needed to be refactored to expose the REST API that is invoked through the API Gateway.
 
 To view these changes, navigate to the Cloud9 services in the AWS console and open the IDE for this workshop. In the left-hand pane, open the <b>lab2/server/src/main/java</b> folder. This will open a series of folders that correspond to the Java package naming. Under the <b>saasfactory</b> folder you'll see an <b>api</b> folder that holds the new REST API for our services. Double-click on the <b>Products.java</b> file to open the API in the editor. The following is a snippet of code from this file:
+
+<b>Step 28</b> – 마지막으로 API API Gateway 로의 이동과 새로운 UI 모델이 애플리케이션 서비스 구현에 어떤 영향을 미쳤는지 주목할 필요가 있습니다. 우리의 목표는 모놀리스 코드의 변경을 최소화하는 것이지만 클라이언트와 모놀리스 간의 상호 작용은 MVC 모델에서 REST 기반 API로 변경되었습니다. 즉, API Gateway를 통해 호출되는 REST API를 노출하려면 MVC의 컨트롤러 부분을 리팩터링해야 했습니다.
+
+이러한 변경 사항을 보려면 AWS 콘솔에서 Cloud9 서비스로 이동하여이 워크샵의 IDE를 엽니다. 왼쪽 창에서 <b>lab2/server/src/main/java</b> 폴더를 엽니다. 그러면 Java 패키지 이름에 해당하는 일련의 폴더가 열립니다. <b>saasfactory</b> 폴더 아래에 우리의 서비스를 위한 새로운 REST API가 있는 <b>api</b> 폴더가 있습니다. <b>Products.java</b> 파일을 두 번 클릭하여 편집기에서 API를 엽니다. 다음은 이 파일의 코드 일부 입니다.
 
 ```java
 @CrossOrigin
@@ -404,14 +416,23 @@ public List<Product> getProducts() throws Exception {
 
 While this code does have similarities to the code from our controller, you'll notice here that we've introduced annotations that declare our REST API entry points. Just like our page controllers, this code delegates to the business logic in our service classes, but now instead of integrating with an HTML templating framework, these methods return JSON strings to the client which now assumes responsibility for rendering the HTML. You'll also notice that we no longer need the controller classes or the HTML templates from the resources folder.
 
+이 코드는 컨트롤러의 코드와 유사하지만 여기서 REST API 진입 점을 선언하는 annotation이 도입 되었음을 알 수 있습니다. 페이지 컨트롤러와 마찬가지로 이 코드는 서비스 클래스의 비즈니스 로직에 위임 하지만 이제 HTML 템플릿 프레임 워크와 통합하는 대신 이 메서드는 이제 HTML 렌더링을 담당하는 클라이언트에 JSON 문자열을 반환합니다. 또한 리소스 폴더의 컨트롤러 클래스 나 HTML 템플릿이 더 이상 필요하지 않음을 알 수 있습니다.
+
 ## Review
 
 While it may not feel as though we've done much to enable migration to our serverless SaaS microservices, the work done in Lab 2 is one of the most fundamental bits of plumbing that has to get put into place to enable you to start thinking about carving out individual microservices.
 
+서버리스 SaaS 마이크로 서비스로의 마이그레이션을 위해 많은 노력을 기울인 것처럼 느껴지지 않을 수도 있지만, Lab 2에서 수행 된 작업은 개별 마이크로서비스로 쪼개는 작업을 위한 기초 공사 가운데 하나 입니다.
+
 With Lab 2, we put all the pieces of multi-tenancy in place without making huge changes to our monolithic application. We introduced onboarding and identity to enable tenant context to get introduced into our environment. We also created all the automated provisioning to create siloed instances of our monolith for each tenant with separate computing and storage for each tenant.
+
+Lab 2 에서는 모놀리식 애플리케이션을 크게 변경하지 않고 모든 멀티 테넌시를 배치했습니다. 테넌트 컨텍스트를 환경에 도입 할 수 있도록 Onboarding 및 Identity를 도입 했습니다. 또한 모든 자동 프로비저닝을 체계를 생성하여 각 테넌트에 대해 별도의 컴퓨팅 및 스토리지를 사용하여 각 테넌트에 대한 siloed monolithic 인스턴스를 생성했습니다.
 
 At the core of all this was a routing experience that enabled our system to route calls from our client to each tenant stack. Finally, we also made the move to a modern UI model, introducing a React application that is served up from S3. By extracting and committing to this new client model, we streamline and focus our efforts as we look to start creating serverless microservices. This prevents our services from being cluttered with worrying about server-rendered HTML.
 
+이 모든 것의 핵심은 우리 시스템이 클라이언트에서 각 테넌트 스택으로 호출을 라우팅 할 수있는 라우팅 레이어를 만드는데 있었습니다. 마지막으로 S3에서 제공되는 React 애플리케이션을 도입하여 최신 UI 모델로 전환했습니다. 이 새로운 클라이언트 모델을 만듦으로써 우리는 서버리스 마이크로 서비스를 만들기 시작할 때 노력을 간소화하고 집중할 수 있습니다. 이를 통해 더이상 서버 렌더링 HTML에 대한 걱정으로 서비스가 복잡해지지 않을것 입니다.
+
 You have now completed Lab 2.
+여기까지 Lab 2를 완료 했습니다.
 
 [Continue to Lab 3](../lab3/README.md)
