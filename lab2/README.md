@@ -34,7 +34,7 @@ Our goals for this lab are to enable this new onboarding automation and register
 
 Before we can start to dig into decomposing our system into microservices, we must introduce the notion of tenancy into our environment. While it's tempting to focus on building new Lambda functions, we have to start by setting up the mechanisms that will be core to creating a new tenant, authenticating them, and connecting their tenant context to each authenticated user for this experience.
 
-시스템을 마이크로 서비스로 분해하기 시작하기 전에, 저희는 먼저 테넌시 개념을 저희 환경에 도입해야합니다. 새로운 Lambda 함수를 만드는 데 중점을두고 있지만, 새로운 테넌트 생성, 인증 및 테넌트 컨텍스트를 인증 된 각 사용자에게 연결하는 핵심적인 메커니즘을 설정하는 것을 우선 시작해야 합니다.
+시스템을 마이크로 서비스로 분해하기 시작하기 전에, 저희는 먼저 테넌시 개념을 저희 환경에 도입해야합니다. 궁극적으로 새로운 Lambda 함수를 만드는 데 중점을두고 있지만, 새로운 테넌트 생성, 인증 및 테넌트 컨텍스트를 인증 된 각 사용자에게 연결하는 핵심적인 메커니즘을 설정하는 것을 우선 시작해야 합니다.
 
 A key part of this lab is deploying an onboarding mechanism that will establish the foundation we'll need to support the incremental migration of our system to a multi-tenant model. This means introducing automation that will orchestrate the creation of each new tenant silo and putting all the wiring in place to successfully route tenants, ideally without changing too much of our monolith to support this environment.
 
