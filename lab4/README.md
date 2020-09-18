@@ -42,9 +42,11 @@ The lab is all about getting your solution moved away from the monolith. The bas
 
 - As part of moving our service over, we also have to consider how we want to represent the product data. In this case, we'll use a <b>pool</b> model for the data where the tables in our relational database will hold the data for all tenants in a shared construct. A column in the table will be used to discriminate the data by tenant identifier.
 
-- 서비스 마이그레이션의 일환으로 제품 데이터를 표현하는 방법도 고려해야합니다. 이 경우 관계형 데이터베이스의 테이블이 공유 구조의 모든 테넌트에 대한 데이터를 보유하는 <b>pool</b> model을 사용합니다. 테이블의 열은 테넌트 식별자로 데이터를 구별하는 데 사용됩니다.
+- 서비스 마이그레이션의 일환으로 제품 데이터를 표현하는 방법도 고려해야합니다. 이 경우 관계형 데이터베이스의 테이블이 공유 구조의 모든 테넌트에 대한 데이터를 보유하는 <b>pool</b> model을 사용합니다. 테이블의 컬럼 하나는 테넌트 식별자에 의해 데이터를 구별하는 데 사용됩니다.
 
 Once these steps are completed, we'll have the core elements of our migration completed. We'll also have layers in place that will simplify the introduction of new services as we move forward.
+
+이 단계들이 완료되면 마이그레이션의 핵심 요소가 완료됩니다. 우리는 또한 앞으로 나아갈 때 새로운 서비스의 도입을 단순화 할 계층을 마련 할 것입니다.
 
 ## Step-By-Step Guide
 
