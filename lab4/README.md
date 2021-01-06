@@ -238,7 +238,7 @@ Sign-in to the application and select the <b>Products</b> link from the navigati
 
 <b>Step 13</b> - As a final activity for this workshop, let's exercise our tenant-aware MetricsManager. Back in Cloud9, open <b>ProductService.java</b> and navigate to the <b>insertProduct</b> method. We'll wrap the lines of the method with some simplistic timing code and then submit that data to our MetricsManager. Your insertProduct method should look like the following.
 
-<b>Step 13</b> - 이 워크숍의 마지막 활동으로 테넌트 인식 MetricsManager를 살펴 보겠습니다. Cloud9로 돌아가 <b>ProductService.java</b>를 열고 <b>insertProduct</b> 메소드로 이동합니다. 간단한 타이밍 코드로 메서드 줄을 래핑 한 다음 해당 데이터를 MetricsManager에 제출합니다. insertProduct 메소드는 다음과 같아야합니다.
+<b>Step 13</b> - 이 워크숍의 마지막 활동으로 테넌트 인식 MetricsManager를 살펴 보겠습니다. Cloud9로 돌아가 <b>ProductService.java</b>를 열고 <b>insertProduct</b> 메소드로 이동합니다. 간단한 타이밍 코드로 메서드 줄을 래핑 한 다음 해당 데이터를 MetricsManager에 제출합니다. insertProduct 메소드는 다음과 같아야 s합니다.
 
 ```java
 public APIGatewayProxyResponseEvent insertProduct(Map<String, Object> event, Context context) {
@@ -291,3 +291,6 @@ sh update-service.sh
 ## Review
 
 This lab was the final step in our move away from the monolith. We moved the last bit of the monolith, the Product service, to a serverless microservice. This eliminated our need to route between the monolith and the microservices and left the system in a fully multi-tenant model. As part of this move, we also took measures to standardize our approach to implementing multi-tenant microservices, introducing layers that would be used to centralize the logging, metrics, and token management that is used by all microservices in our system.
+
+이 실습은 우리의 서비스가 모놀리스에서 벗어나는 마지막 단계였습니다. 모놀리스의 마지막 부분 인 제품 서비스를 서버리스 마이크로 서비스로 옮겼습니다. 이를 통해 모놀리식과 마이크로 서비스 사이를 라우팅 할 필요가 없어졌고 시스템은 완전한 멀티 테넌트 모델로 되었습니다. 이 움직임의 일환으로, 우리는 시스템의 모든 마이크로 서비스에서 사용하는 로깅, 메트릭 및 토큰 관리를 중앙 집중화하는 데 사용할 layer를 도입하여 다중 테넌트 마이크로 서비스 구현에 대한 접근 방식을 표준화하는 조치를 취했습니다.
+s
