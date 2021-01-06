@@ -32,7 +32,7 @@
 
 [![Lab4](images/lab4.png)](./lab4/README.md "Lab 4")
 
-[Proceed to Lab 1 when you are ready to begin.](./lab1/README.md)
+[Lab 1 시작하기](./lab1/README.md)
 
 ## License
 
