@@ -6,11 +6,11 @@
 
 <p align="center"><img src="../images/lab3/LogicalArchitecture.png" alt="Logical Architecture"/></p>
 
-이 다이어그램에서 테넌트에 대한 두 개의 별도 경로가 있음을 확인할 수 있습니다. 테넌트가 API Gateway로 들어가면 새로운 주문 서비스로(마이크로 서비스로 분리 추출된) 라우팅되거나 모놀리식 애플리케이션 계층으로 라우팅 될 수 있습니다. 새로운 마이크로서비스(Lambda 함수)와 애플리케이션 계층을 사용하는 경우 흐름이 달라진다는 점에 유의 해야합니다. 주문 서비스는 Pooled multi-tenant 서비스이므로 모든 테넌트에 대한 요청을 함께 처리합니다. 한편, 모놀리식 애플리케이션에ㅐ는 각 테넌트에 대한 별도의 배포 체계가 여전히 필요합니다. 즉, 사일로화된 모놀리식 애플리케이션들 에는 트래픽을 적절한 애플리케이션 계층으로 전달하기위한 추가적인 라우팅 규칙도 필요합니다 (Application Load Balancer 라우팅 규칙 사용).
+이 다이어그램에서 테넌트에 대한 두 개의 별도 경로가 있음을 확인할 수 있습니다. 테넌트가 API Gateway로 들어가면 새로운 주문 서비스로(마이크로 서비스로 분리 추출된) 라우팅되거나 모놀리식 애플리케이션 계층으로 라우팅 될 수 있습니다. 새로운 마이크로서비스(Lambda 함수)와 애플리케이션 계층을 사용하는 경우 흐름이 달라진다는 점에 유의 해야합니다. 주문 서비스는 Pooled multi-tenant 서비스이므로 모든 테넌트에 대한 요청을 함께 처리합니다. 한편, 모놀리식 애플리케이션에는 각 테넌트에 대한 별도의 배포 체계가 여전히 필요합니다. 즉, 사일로화된 모놀리식 애플리케이션들에는 트래픽을 적절한 애플리케이션 계층으로 전달하기 위한 추가적인 라우팅 규칙도 필요합니다 (Application Load Balancer 라우팅 규칙 사용).
 
-이 실습에서는 상기 개념적 아키텍처를 구현할 것 입니다. 이를 위해 서버리스 모델을 바탕으로 새로운 멀티 테넌트 주문 서비스를 배포 할 것입니다. 우리는 주문 서비스를 위한 언어로 Java를 그대로 사용 합니다. 물론 서버리스 모델에는 다양한 언어가 사용될 수 있습니다!(\*선택에 영향을 줄 수있는 다양한 요인이 있습니다) 하지만 여기서는 실습의 목적상 그대로 Java를 사용 합니다.
+이 실습에서는 상기 개념적 아키텍처를 구현할 것 입니다. 이를 위해 서버리스 모델을 바탕으로 새로운 멀티 테넌트 주문 서비스를 배포할 것입니다. 우리는 주문 서비스를 위한 언어로 Java를 그대로 사용 합니다. 물론 서버리스 모델에는 다양한 언어가 사용될 수 있습니다!(\*선택에 영향을 줄 수있는 다양한 요인이 있습니다) 하지만 여기서는 실습의 목적상 그대로 Java를 사용 합니다.
 
-일반적으로 모놀리식 애플리케이션에서 서비스를 분리 하는 과정에서 논리적인 하나의 마이크로 서비스를 나타내는 클래스 파일을 만들 겁니다. 여기서 아이디어는 모놀리식의 "서비스" 레이어 코드와 마찬가지로 솔루션의 다른 메서드를 가진 클래스를 계속 보유한다는 것입니다. 그런 다음 클래스의 다양한 메서드들을 개별 Lambda 함수로 배포합니다. <b>이 모델을 사용하면 큰 변경 없이 모놀리스에서 식코드를 쉽게 이동할 수 있습니다.</b> 사실 이런 방식의 변경은 우리가 이미 모놀리식을 서비스에 대한 명확한 개념을 가지고 만들었기 때문에 상대적으로 수월하게 가능 하지, 대부분의 경우 모놀리식 애플리케이션은 이처럼 깔끔하게 분리되지 않을겁니다😭. 또한 이 서비스로 유입되는 테넌트 컨텍스트를 활용하여 데이터를 분할하고 로깅 컨텍스트를 추가하는 등의 작업도 더해져야 합니다.
+일반적으로 모놀리식 애플리케이션에서 서비스를 분리 하는 과정에서 논리적인 하나의 마이크로 서비스를 나타내는 클래스 파일을 만들 겁니다. 여기서 아이디어는 모놀리식의 "서비스" 레이어 코드와 마찬가지로 솔루션의 다른 메서드를 가진 클래스를 계속 보유한다는 것입니다. 그런 다음 클래스의 다양한 메서드들을 개별 Lambda 함수로 배포합니다. <b>이 모델을 사용하면 코드의 큰 변경없이 모놀리스에서 마이크로서비스로 쉽게 이동할 수 있습니다.</b> 사실 이런 방식의 변경은 우리가 이미 모놀리식을 서비스에 대한 명확한 개념을 가지고 만들었기 때문에 상대적으로 수월하게 가능하지만, 대부분의 경우 모놀리식 애플리케이션은 이처럼 깔끔하게 분리되지 않을겁니다😭. 또한 이 서비스로 유입되는 테넌트 컨텍스트를 활용하여 데이터를 분할하고 로깅 컨텍스트를 추가하는 등의 작업도 더해져야 합니다.
 
 한 가지 미리 알아 두어야할 사항은 이번 실습에서 데이터 마이그레이션 측면의 세부적인 사항은 깊이 살펴보지 않을 것입니다🙅🏻‍♂️. 물론 데이터 마이그레이션 역시 중요한 부분이지만 실습의 목적상 깊이 다루지 않습니다. 따라서 실습에서는 새로운 서비스를 쪼개고 새로운 멀티 테넌트 스토리지 구성을 도입 할 때 빈 슬레이트 (모놀리식 데이터베이스에 존재하는 모든 데이터를 남겨 둡니다)로 시작합니다.
 
@@ -41,7 +41,7 @@ cd /home/ec2-user/environment/saas-factory-serverless-workshop/resources
 sh lab3.sh
 ```
 
-이 스크립트는 cloud formation 스택 생성을 트리거 합니다. <b>계속 진행 하기전에 아래와 같이 lab3 stack이 성송적으로 생성되었는지 확인하십시오.</b>
+이 스크립트는 cloud formation 스택 생성을 트리거 합니다. <b>계속 진행 하기전에 아래와 같이 lab3 stack이 성공적으로 생성되었는지 확인하십시오.</b>
 
 <p align="center"><img src="../images/lab3/CloudFormation.png" alt="Cloud Formation"/></p>
 
@@ -59,8 +59,6 @@ sh website-lab3.sh
 <b>Step 5</b> – 자 이제 필요한 lambda 함수는 제 위치에 준비되었습니다👍🏻. 이제 API Gateway가 이전에 사용했던 모놀리식 애플리케이션 대신, 서버리스 마이크로 서비스로 트래픽을 라우팅할 수 있도록 생성한 lambda 함수에 entry point를 매핑했는지 확인해야합니다. AWS 콘솔에서 API Gateway 서비스로 이동합니다. 목록에서 <b>saas-factory-srvls-wrkshp-lab3</b> API를 선택합니다. 그러면 다음과 같이 해당 API에 대해 구성된 리소스 목록이 표시됩니다.
 
 <p align="center"><img src="../images/lab3/APIGatewayOrderService.png" alt="Order Service"/></p>
-
-Here you'll see the basic CRUD operations that are enabled as resources in our API Gateway. There are GET and POST resources which don't require parameters. There is also a /{id} route that adds an identifier to the resource to enable GET, DELETE, and PUT operations on individual orders.
 
 여기에는 API Gateway에서 리소스로 활성화 된 기본 CRUD 작업이 표시됩니다. 매개 변수가 필요하지 않은 GET 및 POST 리소스가 있습니다. 또한 리소스에 식별자를 추가하여 개별 주문에 대한 GET, DELETE 및 PUT 작업을 활성화하는 /{id} 경로가 있습니다.
 
@@ -140,11 +138,9 @@ sh update-service.sh
 
 <p align="center"><img src="../images/lab3/AddOrderSuccess.png" alt="Add Order"/></p>
 
-<b>Step 14</b> – As part of moving to this new microservice, we also had to remove our dependency on the database monolith where orders had previously been shared in one large database used by all services. Extracting this data from the monolith is essential to our microservices story. Each of our microservices must own the data that it manages to limit coupling and enable autonomy. When we move this data out of the monolith, it also gives us the opportunity to determine what service and multi-tenant storage strategy will best fit the multi-tenant requirements of our microservice.
+<b>Step 14</b> – 이 새로운 마이크로 서비스로 이동하는 과정에서 이전에 모든 서비스에서 함께 사용하던 데이터베이스로 부터 주문 서비스를 위한 데이터베이스 사이의 종속성도 제거해야했습니다. 모놀리식 아키텍처로부터 데이터베이스를 분리하는 것 역시 마이크로 서비스 전환 과정에서 필수적입니다. 각 마이크로 서비스는 결합을(coupling) 제한하고 데이터 자율성(autonomy)을 확보하기 위해 관리하는 데이터를 직접 소유하는게 좋기 때문입니다. 이렇게 데이터베이스를 모놀리식과 분리하면 마이크로 서비스 기반의 멀티 테넌트 요구 사항에 가장 적합한 서비스 및 멀티 테넌트 스토리지 전략을 결정할 수 있는 기회가 제공될 것 입니다.
 
-<b>Step 14</b> – 이 새로운 마이크로 서비스로 이동하는 과정에서 이전에 모든 서비스에서 함께 사용하던 데이터베이스으로 부터 주문 서비스를 위한 데이터베이스 사이의 종속성도 제거해야했습니다. 모놀리식 아키텍처로 부터 데이터베이스를 분리 하는것 역시 마이크로 서비스 전환 과정에서 필수적입니다. 각 마이크로 서비스는 결합을(coupling) 제한하고 데이터 자율성(autonomy)을 확보하기 위해 관리하는 데이터를 직접 소유하는게 좋기 때문입니다. 이렇게 데이터베이스를 모놀리식과 분리하면 마이크로 서비스 기반의 멀티 테넌트 요구 사항에 가장 적합한 서비스 및 멀티 테넌트 스토리지 전략을 결정할 수있는 기회가 제공될 것 입니다.
-
-이 실습에서는 주문 관리 마이크로 서비스에서 관리 할 주문 데이터를 운용 하는 방법을 살펴 봅니다. 이를 위해 먼저 각 테넌트에 대한 데이터를 사일로 (silo)해야 합니까? 풀링(공통 테이블/데이터베이스 공유) 해야 합니까? 격리 요구 사항은 무엇입니까? 같은 질문에 답을 할 수 있어야 합니다. 이번 실습 솔루션의 경우 주문 데이터를 DynamoDB로 이동하고 NoSQL 표현을 사용하기로 결정했습니다. 그러나 격리상의 이유로 각 테넌트에 대해 별도의 테이블에 데이터를 저장하도록 선택했습니다. 다음은 주문 서비스에 대한 데이터 표현의 개념적 모델입니다.
+이 실습에서는 주문 관리 마이크로 서비스에서 관리할 주문 데이터를 운용하는 방법을 살펴 봅니다. 이를 위해 먼저 각 테넌트에 대한 데이터를 사일로 (silo)해야 합니까? 풀링(공통 테이블/데이터베이스 공유) 해야 합니까? 격리 요구 사항은 무엇입니까? 같은 질문에 답을 할 수 있어야 합니다. 이번 실습 솔루션의 경우 주문 데이터를 DynamoDB로 이동하고 NoSQL 표현을 사용하기로 결정했습니다. 그러나 격리상의 이유로 각 테넌트에 대해 별도의 테이블에 데이터를 저장하도록 선택했습니다. 다음은 주문 서비스에 대한 데이터 표현의 개념적 모델입니다.
 
 <p align="center"><img src="../images/lab3/ConceptualModel.png" alt="Conceptual Model"/></p>
 
