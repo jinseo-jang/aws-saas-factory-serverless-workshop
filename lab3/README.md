@@ -241,6 +241,14 @@ sh update-service.sh
 
 <p align="center"><img src="../images/lab3/CloudWatchLogStream.png" alt="CloudWatch Log Stream"/></p>
 
+## Sequence Diagram
+<details>
+<summary>Basic Flow</summary>
+<div markdown="1">
+<p align="center"><img src="../images/lab3/SequenceDiagram-lab03.png"/></p>
+</div>
+</details>
+
 ## Review
 
 이 실습은 마이그레이션 프로세스의 주요 단계를 담았습니다. 이제 모놀리식 애플리케이션을 마이크로 서비스로 분해하는 점진적인 마이그레이션을 시작했습니다. 이 모델의 핵심 요소는 모놀리식에 남아있는 코드와 함께 이러한 새로운 마이크로 서비스를 나란히 실행할 수있는 체계를 만드는 것이었습니다. 이 시나리오에서는 Order 서비스를 분리하여 서버리스 마이크로 서비스로 이동했습니다. 또한 관리하는 데이터 역시 새로운 환경으로 옮겼습니다. 그런 다음 API Gateway를 설정하여 트래픽을 선택적으로 마이크로 서비스 또는 모놀리스로 전달했습니다 (액세스중인 기능에 따라 다름).

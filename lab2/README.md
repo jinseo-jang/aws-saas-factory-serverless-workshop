@@ -271,6 +271,20 @@ public List<Product> getProducts() throws Exception {
 
 이 코드는 컨트롤러의 코드와 유사하지만 여기서 REST API 진입 점을 선언하는 annotation이 도입 되었음을 알 수 있습니다. 페이지 컨트롤러와 마찬가지로 이 코드는 서비스 클래스의 비즈니스 로직에 위임 하지만 이제 HTML 템플릿 프레임 워크와 통합하는 대신 이 메서드는 이제 HTML 렌더링을 담당하는 클라이언트에 JSON 문자열을 직접 반환합니다. 또한 리소스 폴더의 컨트롤러 클래스 나 HTML 템플릿이 더 이상 필요하지 않음을 알 수 있습니다.
 
+## Sequence Diagram
+<details>
+<summary>Onboarding Flow</summary>
+<div markdown="1">
+<p align="center"><img src="../images/lab2/SequenceDiagram-lab02-onboarding.png"/></p>
+</div>
+</details>
+<details>
+<summary>Basic Flow</summary>
+<div markdown="1">
+<p align="center"><img src="../images/lab2/SequenceDiagram-lab02.png"/></p>
+</div>
+</details>
+
 ## Review
 
 서버리스 SaaS 마이크로 서비스로의 마이그레이션을 위해 많은 노력을 기울인 것처럼 느껴지지 않을 수도 있지만, Lab 2에서 수행 된 작업은 개별 마이크로서비스로 쪼개는 작업을 위한 기초 공사 가운데 하나 입니다.
