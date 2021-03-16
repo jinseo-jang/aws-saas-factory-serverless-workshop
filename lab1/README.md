@@ -216,6 +216,9 @@ MVC 프레임워크에 대한 미묘한 차이는 본 실습 에서 중요한 �
 <p align="center"><img src="../images/lab1/SequenceDiagram-lab01.png"/></p>
 </div>
 </details>
+<!--
+https://sequencediagram.org/index.html#initialData=A4QwTgLglgxloDsIAICqBnApmAUKSs8ISyAQmAPYDuWu+0ciKAggDKl7gNEkDKwYKAgDmyXphgBXQRACenAo2IoAKgAtZAW0wAbTCABmC7k2QBhCkko69dLoVPiwAN1iZjD5cgAiICh6USACVvDhwMbABaAD5yaloALnQoYQQhHDiaKOi2UgSABQB5XhVkAHodCmF03Jj+QRExCWkoOQSceqFRcSkZWTqBLqbe1tkE5GZJCDVMJFgQaEsOwcaelrlImNz22pjMxKDMdGBLLGQqVrVkAB0ELHRky2QYCgoAayh3fezvsATJiAUTQLeY2WTIdAgZyYW73R4IZ6vD5HZAZShZMAxCJ-VHYvboxJYcAwK4CCgAE0kMAgsP0YBJyAoYHJ2GQADoOWj4j8Cdh-lMgSCYCAwcgQOTybSHlAni93p9kIDkDNxayuRituwEgBxACipTKZMp1PQNwQeoNTJZYHQOFq0U6q2afXaju6ztGAwa7pGbQmUzUTKgAC8QUs3cN1v1ohYrBQbHzUbGINZbHVsK4YJhXRm3DFfBR2gWYiE8jhS5togWi35K05M9mOrms5Xk6m+Tg2-G0zF1FpdPoDOMALIU3Q4PvaPSGXsaKeDkcgYDALrLb2RvoAHk2k4Hhh27G3kQjaxddvYld+CQAEiph6xkIdjqd3Nij1egA
+-->
 
 ## Review
 
