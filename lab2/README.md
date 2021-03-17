@@ -271,6 +271,27 @@ public List<Product> getProducts() throws Exception {
 
 이 코드는 컨트롤러의 코드와 유사하지만 여기서 REST API 진입 점을 선언하는 annotation이 도입 되었음을 알 수 있습니다. 페이지 컨트롤러와 마찬가지로 이 코드는 서비스 클래스의 비즈니스 로직에 위임 하지만 이제 HTML 템플릿 프레임 워크와 통합하는 대신 이 메서드는 이제 HTML 렌더링을 담당하는 클라이언트에 JSON 문자열을 직접 반환합니다. 또한 리소스 폴더의 컨트롤러 클래스 나 HTML 템플릿이 더 이상 필요하지 않음을 알 수 있습니다.
 
+## Sequence Diagram
+<details>
+<summary>Onboarding Flow</summary>
+<div markdown="1">
+<p align="center"><img src="../images/lab2/SequenceDiagram-lab02-onboarding.png"/></p>
+</div>
+</details>
+<!--
+https://sequencediagram.org/index.html#initialData=A4QwTgLglgxloDsIAICqBnApmAUKSs8ISyAQmAPYDuWu+0ciKAggAoCSyA4gPQDqecAyIkAMiAC2AIwAmIABRhMAcyjoIYENAoIAtLQBusTAEpBBRsRTjpc+REwIr+7EZinzwpsgAiATycJCh9Se0crdDN6Qm8AYQplBCgICk8Yq2RYgBsKAFcZADEKMAktKB00yxJmUVIcHEcNP3RQOARlZAAGADoANnqMbF0APnJqWgAudCh23OAcMZoh4bZOXj4J1gB5AGUAFWQeJVV1TW0EHFXufhGbWQVjtQ0ynRcwN1MJx-VsHDu7b7Pc5vD4mEZXdabXYHHgOJxIdCXDjXPi3ST3MLwiAg4wmCYzWgQPbhJB-dF2OHOQy4kb+QLBUKUhF4nB0yQMzERMFo2wKJnY6nuFn-PkkgWuGng5GQpFrG48jGAs7lPSCz5k3mKFRPZWvNVg4bxRLJCgTGBKLSYYlYwZgVgUChZHBGpIpXQKgHa04vVUSoUTDWKr1AlU4oUjF0ms0Why250JV0Ud3DEVak4hvV+9WppU+sOmCM5fJFEo+6OYS07CAgGAAa1lKIAPO6c8Hdb73riA4taM3dBD+AHbX2e9gA9k8oViqVgYai1PS+cJsBKEZpjoZspnfOSzPQytahNUMA5A5kKIno5sMgAEq5LKYbeT3c+vs1UgBnC2kajsBTKDGggQA
+-->
+
+<details>
+<summary>Basic Flow</summary>
+<div markdown="1">
+<p align="center"><img src="../images/lab2/SequenceDiagram-lab02.png"/></p>
+</div>
+</details>
+<!--
+https://sequencediagram.org/index.html#initialData=A4QwTgLglgxloDsIAICqBnApmAUKSs8ISyAQmAPYDuWu+0ciKAwgDYUCuAJgGKVJ5wDIiQDKAZkEFGxFAEEACgElkAcQD0AdSnCmyADIgAtgCMuIABQgOEABYBaWgDdYmAJQ7Ce5hQDmCKAgKTxkSQ1NzKxtbCjAoAC9sD3ovWWQ5fVIQkRQAJUx0CB8kSlZWbGy9UWwXGExKtIAREGCU0LzGrJxMEoBPdFA4BF9kAAYAOgA2HBwMbHsAPnJqWgAudChhzZxlmnmFtk5efghVtQBRABVkdQAPe-HbCCNWHEPuPgokRYlVnAl7It3scvqc3uwPidAUtKHswGcABKXACy+mQ+QGXywO1htEWihUGk0qwUAHlRNd1NY7DgCWotItwmZLNSHM5XG4znJoj0GCBoF8cEzIqzHDUOUC-AEgn8fP5AhRocKWdExWBau4-sqonY1Rq3NC6UTVgApTTXS4UADWPVpynpmmhuzWJtEpIAcuiCsAsZgADoIKiBWzIM0W622537KPw5CiEBOTCh83IS02hDIAObOMFDZfONBMAgXz1GPQuax2Z4mErbDrTDgGAh4CULgcGAQANYRsh2JcbDIcZDnG1sCLGOraryaKxBL8qD5hEN-tgTOB4PJ8Ppkdw-H242qK43FsUNsd9ABw+UvvYC-ruyb1MRhB2wkMhba1mzxJgTnpGdxPE86Cp+AEJEkhr7loZyvg6e5vsSOYoJcPSyEoXBrtmS4gCusFEvimR-BkpAEaQqy5Jw0DDMgJi9GuKEIGhGHYbhxGLBiRSgqU5SVhxxQQNx+zVOqrh-MJGqLM0FB-FJ7GdH8uSdNCUkyS00LiaJ-zinU0J8VxFBlHWtKZAAPICeklAZPFEVBmhmfYxE2QhTq4nWroel6mIINiZY1nCiIomi+QICumy+DueKLBWMFAA
+-->
+
 ## Review
 
 서버리스 SaaS 마이크로 서비스로의 마이그레이션을 위해 많은 노력을 기울인 것처럼 느껴지지 않을 수도 있지만, Lab 2에서 수행 된 작업은 개별 마이크로서비스로 쪼개는 작업을 위한 기초 공사 가운데 하나 입니다.

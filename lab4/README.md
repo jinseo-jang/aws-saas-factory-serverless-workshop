@@ -210,6 +210,17 @@ sh update-service.sh
 
 <p align="center"><img src="../images/lab4/MetricsManager.png" alt="MetricsManager"/></p>
 
+## Sequence Diagram
+<details>
+<summary>Basic Flow</summary>
+<div markdown="1">
+<p align="center"><img src="../images/lab4/SequenceDiagram-lab04.png"/></p>
+</div>
+</details>
+<!--
+https://sequencediagram.org/index.html#initialData=A4QwTgLglgxloDsIAICqBnApmAUKSs8ISyAQmAPYDuWu+0ciKAwgDYUCuAJgGKVJ5wDIiQDKAZkEFGxFAEEACgElkAcQD0AdSnCmyADIgAtgCMuIABQgOEABYBaWgDdYmAJQ7Ce5hQDmCKAgKTxkSQ1NzKxtbCjAoAC9sD3ovWQNjM0tYrmxHbBcYdxCRFAARAE8EYwpS0mK9cMyLYEouDhgIPLACopTQlAAlWpwcTCQwcvRQOARfZAAGADoANhGcDFyAPnJqWgAudCh-KAQcHZottk5efgg9tQBRABVkdQAPD8XbCCNWHCvuHwKEh7JsJHscBJ7KCATdgXd-uxAbdodtKBcwPcABJPACy+mQA0wU2BWDO6NooMUKg0mj2CgA8qIXuprHYcNS1FpQY1ImyHM5XG57nJomMGCBoMCcLzLPyuj03DC-AEghCfMcgqjZVE7AqhRCdfLBYUlVTlFy6QApTQvJ4UADWYw5FtpqPO+ytogZADlCcTgKTMAAdBBUQK2ZA2u2O50erbxzHIUQgJyYKO25D2p0IZChk7J4mHYHJoJgEC+TDk3a5UEbJMjeugxP3LDgGCR7LYasY5sU7B7USYeTRWIJSVQEtYzAgHJgPNhiMZmM5nuUzac2l7VTPV5dsDoUPhuzLrOx06b7mbI2juKJMDC5Ciuxj+IT6U3l93pKoy905AujSV46vu+qmvcMoZJEoEmu4PJQVkYBzmB7j3Kow5ZmMshKFwyAAGaUEYoZPre45Srm06zt2IFIbksFKteCEWDB+QGoWrCYB0WYgCYHELiY5SYVUSA4ZBESIch9GghUVRGDUpAQjJ1S1NqTEsd0BqAZaAA80I0ZJrHgVpbp9jWmJer6-okggZKJqZGLYniBJEggc4nL4a61ps9YQes64tsgbZgB2yAtBQbQdJ5YD2fsQ4jl+ZGThRM5zgux6RtGZ6rnZG6ulo267uoYURRA6BpUumXZs6f7weJuoxN+D4iqRb7kWJTT8q+P7mkB-7GcBTHFe0nT0RBOpDR0KEMeNrTDVNaEYU8WEibhBEUERubPg1iVTil1GDbNk1SYxdUTSNhmoXFyAAIocNggn4MYw7YKGAlCdhXDtZEZ1TaCQwKTg-2qadh3nRpRl-rp9gzeFc2jf1mjuv25nen6RLWbZyMxQOyA4vi-qudg7lRaiPkAUAA
+-->
+
 ## Review
 
 이번 실습은 모놀리식으로 부터 마이크로 서비스 기반의 SaaS로의 전환 과정에 있어 마지막 단계 였습니다. 이 단계에서 여러분은 마지막으로 모놀리식에 남아 있던 제품 서비스 모듈을 서버리스 마이크로 서비스로 옮겼습니다. 이로써 이제 모놀리식과 서버리스 마이크로 서비스를 병행해 운영할 필요 없이 단 하나의 마이크로 서비스 기반의 멀티 테넌트 모델을 갖추게 되었습니다. 그리고 전환 과정의 일환으로 멀티 테넌트 마이크로 서비스들이 효과적으로 코드를 공유할 수 있도록 layer라는 lambda기능을 사용했습니다. 이를 활용해 로깅, 메트릭 그리고 토큰 관리 모듈을 공통 라이브러리처럼 만들어 효율적으로 사용했습니다.

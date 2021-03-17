@@ -209,6 +209,17 @@ MVC 프레임워크에 대한 미묘한 차이는 본 실습 에서 중요한 �
 
 이 코드는 화면에 제품 목록을 채우는데 사용되는 템플릿을 나타냅니다. <b>&lt;tr&gt;</b> 테이블 행 태그를 감싸는 <b>for-each</b> 루프가 있고 <b>&lt;td&gt;</b>가 있음을 알 수 있습니다. 테이블 셀의 데이터 태그에는 Product 모델 객체에 대한 참조가 포함됩니다. 예를 들어 첫 번째 열은 <b>\${product.sku}</b> 구문을 사용하여 제품 SKU로 구별됩니다. 여기서 결론은 여러분의 요청에 대한 결과로써 HTML과 모델 객체의 바인딩된 HTML을 제공 한다는 것입니다.
 
+## Sequence Diagram
+<details>
+<summary>Basic Flow</summary>
+<div markdown="1">
+<p align="center"><img src="../images/lab1/SequenceDiagram-lab01.png"/></p>
+</div>
+</details>
+<!--
+https://sequencediagram.org/index.html#initialData=A4QwTgLglgxloDsIAICqBnApmAUKSs8ISyAQmAPYDuWu+0ciKAggDKl7gNEkDKwYKAgDmyXphgBXQRACenAo2IoAKgAtZAW0wAbTCABmC7k2QBhCkko69dLoVPiwAN1iZjD5cgAiICh6USACVvDhwMbABaAD5yaloALnQoYQQhHDiaKOi2UgSABQB5XhVkAHodCmF03Jj+QRExCWkoOQSceqFRcSkZWTqBLqbe1tkE5GZJCDVMJFgQaEsOwcaelrlImNz22pjMxKDMdGBLLGQqVrVkAB0ELHRky2QYCgoAayh3fezvsATJiAUTQLeY2WTIdAgZyYW73R4IZ6vD5HZAZShZMAxCJ-VHYvboxJYcAwK4CCgAE0kMAgsP0YBJyAoYHJ2GQADoOWj4j8Cdh-lMgSCYCAwcgQOTybSHlAni93p9kIDkDNxayuRituwEgBxACipTKZMp1PQNwQeoNTJZYHQOFq0U6q2afXaju6ztGAwa7pGbQmUzUTKgAC8QUs3cN1v1ohYrBQbHzUbGINZbHVsK4YJhXRm3DFfBR2gWYiE8jhS5togWi35K05M9mOrms5Xk6m+Tg2-G0zF1FpdPoDOMALIU3Q4PvaPSGXsaKeDkcgYDALrLb2RvoAHk2k4Hhh27G3kQjaxddvYld+CQAEiph6xkIdjqd3Nij1egA
+-->
+
 ## Review
 
 Lab 1의 목표는 기존 모놀리식 애플리케이션 및 아키텍처 기본 사항을 살펴 보는 것이었습니다. 이를 위해 기본 아키텍처, 애플리케이션 코드를 검토하고 해당 코드를 인프라에 배포했습니다. 그런 다음 모노리식 애플리케이션을 실행하여 코드 동작 흐름을 살펴 봤습니다. 또한 이 솔루션을 구축하는 데 사용되는 클래식 MVC 모델을 확인 하기 위해 모놀리식의 기본 코드를 살펴보고 서비스 및 컨트롤러를 통한 서비스 연결이 어떻게 되는지 살펴보는데 중점을 두었습니다. 마지막으로 강조 하고 싶은 부분은 Lab 1에서 만든 환경에는 아직 테넌트에 대한 컨셉이 인프라와 애플리케이션에 전혀 반영되지 않았다는 것입니다.
